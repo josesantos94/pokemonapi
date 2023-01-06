@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 
 function App() {
-  let pokemonApi = 'http://pokeapi.co/api/v2/pokemon';
+  let pokemonApi = 'https://pokeapi.co/api/v2/pokemon';
   const [list, setList] = useState([]);
   const [next, setNext] = useState(null);
   const [previous, setPrevious] = useState(null);
