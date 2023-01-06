@@ -69,6 +69,7 @@ const handleClick = (event) => {
   return (
     <>
       <h1>Consumir api pokemon</h1>
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
       <hr />
       {list.map((item) => (
         <Pokemon key={item.name} data={item} />
