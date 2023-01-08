@@ -46,6 +46,7 @@ function App() {
     return sortedArray;
   }
 
+  //clique vai buscar o event e com o value faz as alterações 
   const handleClick = (event) => {
 
     const api = event.target.value;
@@ -73,38 +74,11 @@ function App() {
  
   }
 
-
-
-  //clique vai buscar o event e com o value faz as alterações 
-  // const handleClick = (event) => {
-
-  //   console.log({ "Evento": event });
-
-  //   axios.get(event.target.value).then((response) => {
-  //     // reoordenando alfabeticamente nossos pokemons
-  //     const sortedArray = [...response.data.results];
-  //     sortedArray.sort((a, b) => {
-  //       return a.name.localeCompare(b.name);
-  //     }, setList(sortedArray));
-  //   }),
-
-  //     axios.get(event.target.value).then((response) => {
-  //       setNext(response.data.next);
-  //     }),
-
-
-  //     axios.get(event.target.value).then((response) => {
-  //       setPrevious(response.data.previous);
-  //     })
-  // }
-
-
-
   return (
     <>
       <h1>Consumir api pokemon</h1>
       <hr />
-      <div style={{ marginTop: 100, marginBottom: 100 }}>{list.length === 0 && 'carregando pokemons...'}</div>
+      <div style={{ marginTop: 100, marginBottom: 100 }}>{list.length === 0 && 'carregando pokemons...' }</div>
       {list.map((item) => (
         <Pokemon key={item.data.name} details={item.data} />
       ))},
