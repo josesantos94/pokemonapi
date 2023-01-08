@@ -11,86 +11,114 @@ function App() {
   const [next, setNext] = useState(null);
   const [previous, setPrevious] = useState(null);
 
-  function sortedArray(list) {
+  useEffect(() => {
+    axios.get(pokemonApi).then((response) => {
+      setNext(response.data.next);
+    });
 
-    const sortedArray = [...list];
+  }, [])
+
+  useEffect(() => {
+    axios.get(pokemonApi).then((response) => {
+      setPrevious(response.data.previous);
+    });
+  }, [])
+
+  
+  useEffect(() => {
+    axios.get(pokemonApi).then((response) => {
+      // reoordenando alfabeticamente nossos pokemons
+      const listaSort = sortArray(response.data.results);
+      const promissesArray = listaSort.map((item) => {
+        return axios.get(item.url);
+      });
+
+      Promise.all(promissesArray).then((values) => setList(values));
+
+    });
+  }, []);
+
+  function sortArray(lista) {
+    const sortedArray = [...lista];
     sortedArray.sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
-
-    setList(sortedArray);
-
+    return sortedArray;
   }
 
-  function nextPage(next) {
-    setNext(next);
+  const handleClick = (event) => {
+
+    const api = event.target.value;
+  
+      axios.get(api).then((response) => {
+        setNext(response.data.next);
+      });
+  
+        
+      axios.get(api).then((response) => {
+        setPrevious(response.data.previous);
+      });
+   
+   
+      axios.get(api).then((response) => {
+        // reoordenando alfabeticamente nossos pokemons
+        const listaSort = sortArray(response.data.results);
+        const promissesArray = listaSort.map((item) => {
+          return axios.get(item.url);
+        });
+  
+        Promise.all(promissesArray).then((values) => setList(values));
+  
+      });
+ 
   }
 
-  function previousPage(previous) {
-    setPrevious(previous);
-  }
 
-   useEffect(() => {
-    axios
-      .get(pokemonApi).then((response) =>
-        sortedArray(response.data.results),
-
-      );
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(pokemonApi).then((response) =>
-        nextPage(response.data.next),
-      );
-  }, [])
-
-  useEffect(() => {
-    axios
-      .get(pokemonApi).then((response) =>
-        previousPage(response.data.previous),
-      );
-  }, [])
 
   //clique vai buscar o event e com o value faz as alterações 
-const handleClick = (event) => {
-      
-      axios.get(event.target.value).then((response) =>
-        sortedArray(response.data.results),
-      );
-    axios.get(event.target.value).then((response) =>
-        nextPage(response.data.next),
-      );
-    axios.get(event.target.value).then((response) =>
-        previousPage(response.data.previous),
-      );
-  }
+  // const handleClick = (event) => {
+
+  //   console.log({ "Evento": event });
+
+  //   axios.get(event.target.value).then((response) => {
+  //     // reoordenando alfabeticamente nossos pokemons
+  //     const sortedArray = [...response.data.results];
+  //     sortedArray.sort((a, b) => {
+  //       return a.name.localeCompare(b.name);
+  //     }, setList(sortedArray));
+  //   }),
+
+  //     axios.get(event.target.value).then((response) => {
+  //       setNext(response.data.next);
+  //     }),
+
+
+  //     axios.get(event.target.value).then((response) => {
+  //       setPrevious(response.data.previous);
+  //     })
+  // }
+
+
 
   return (
     <>
       <h1>Consumir api pokemon</h1>
-      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
       <hr />
+      <div style={{ marginTop: 100, marginBottom: 100 }}>{list.length === 0 && 'carregando pokemons...'}</div>
       {list.map((item) => (
-        <Pokemon key={item.name} data={item} />
-      ))}
-      <button value = {previous} onClick={handleClick} style={{ marginRight: 50 }} disabled={previous === null}>Atrás</button>
-      <button value = {next} onClick={handleClick} disabled={next === null}>Frente</button>
+        <Pokemon key={item.data.name} details={item.data} />
+      ))},
+      <button value={previous} onClick={handleClick} style={{ marginRight: 50 }} disabled={previous === null}>Atrás</button>
+      <button value={next} onClick={handleClick} disabled={next === null}>Frente</button>
+
 
     </>
-  );
+  )
 }
 
-const Pokemon = ({ data }) => {
-  const [details, setDetails] = useState(null);
 
-  useEffect(() => {
-    axios.get(data.url).then((response) => setDetails(response.data));
-  }, []);
+const Pokemon = ({ details }) => {
 
-  if (details === null) {
-    return <div>-</div>;
-  }
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img src={details.sprites.front_default} style={{ width: 30, marginRight: 20 }} />
@@ -102,5 +130,6 @@ const Pokemon = ({ data }) => {
   )
 
 };
+
 
 export default App;
